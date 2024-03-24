@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud    
+    spec:
+#Containerbeginn
+      containers:
+      - name: nextcloud
+        image: nextcloud
+        env:
+        - name: TZ
+          value: Europe/Amsterdam
+        - name: NEXTCLOUD_URL
+          value: https://nextcloud.teutostack.io
+        - name: NEXTCLOUD_UPLOAD_MAX_FILESIZE
+          value: 4G
+        - name: NEXTCLOUD_MAX_FILE_UPLOADS
+          value: "20"
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: "nextcloud.teutostack.io"
+#offene Ports des Containers
+        ports:
+        - name: apache
+          containerPort: 80
+          protocol: TCP
+#Container-Volume
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: nextcloud-storage
+#Anbindung des PVC
+      volumes:
+      - name: nextcloud-storage
+        persistentVolumeClaim:
+        claimName: nextcloud-claim
+---
+#PVC (separates Manifest in der selben Datei)
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nextcloud-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5G
