@@ -1,22 +1,22 @@
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
 metadata:
-  name: nextcloudingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    kubernetes.io/ingress.class: nginx
-    certmanager.k8s.io/cluster-issuer: letsencrypt-http01-production
-    certmanager.k8s.io/acme-challenge-type: http01
+  name: nextcloudingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-http01-production
+    certmanager.k8s.io/acme-challenge-type: http01
 spec:
-  tls:
-  - hosts:
-    - nextcloud.teutostack.io
-    secretName: tls-secret-nextcloud
-  rules:
-  - host: nextcloud.teutostack.io
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: nextcloud
-          servicePort: 80
+  tls:
+  - hosts:
+    - nextcloud.teutostack.io
+    secretName: tls-secret-nextcloud
+  rules:
+  - host: nextcloud.teutostack.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nextcloud
+          servicePort: 80
